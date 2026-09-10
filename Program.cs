@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using TraineeAPI.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -18,6 +21,12 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Register ApplicationDbContext
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")
+    )
+);
 
 var app = builder.Build();
 
