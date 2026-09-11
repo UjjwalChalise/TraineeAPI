@@ -1,12 +1,34 @@
+using Microsoft.EntityFrameworkCore;
+using TraineeAPI.Data;
+using TraineeAPI.Repository;
+using TraineeAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Controllers
 builder.Services.AddControllers();
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
+// Database
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection");
 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+// Repository DI
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+
+// Service DI
+builder.Services.AddScoped<ICourseService, CourseService>();
+
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+
+builder.Services.AddScoped<IStudentService, StudentService>();
+// Swagger
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -18,20 +40,13 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 var app = builder.Build();
 
+// Configure pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint(
-            "/swagger/v1/swagger.json",
-            "My API V1"
-        );
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
