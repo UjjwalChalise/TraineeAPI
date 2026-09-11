@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using TraineeAPI.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -5,7 +8,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 
+
 builder.Services.AddSwaggerGen();
+
+var connectionstring = builder.Configuration.GetConnectionString("TraineeConnections");
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionstring));
+
 
 builder.Services.AddCors(options =>
 {
