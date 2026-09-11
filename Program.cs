@@ -1,11 +1,18 @@
+using Microsoft.EntityFrameworkCore;
+using TraineeAPI.Data;
+using TraineeAPI.Repositories;
+using TraineeAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddSwaggerGen();
+
 
 builder.Services.AddCors(options =>
 {
@@ -17,7 +24,39 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' not found.");
 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IStudentRepository,
+                           StudentRepository>();
+
+builder.Services.AddScoped<IStudentService,
+                           StudentService>();
+
+builder.Services.AddScoped<ITeacherRepository,
+                           TeacherRepository>();
+
+builder.Services.AddScoped<ITeacherService,
+                           TeacherService>();
+
+builder.Services.AddScoped<IModuleRepository,
+                           ModuleRepository>();
+
+builder.Services.AddScoped<IModuleService,
+                           ModuleService>();
+
+builder.Services.AddScoped<IAssignmentRepository,
+                           AssignmentRepository>();
+
+builder.Services.AddScoped<IAssignmentService,
+                           AssignmentService>();
 
 var app = builder.Build();
 
