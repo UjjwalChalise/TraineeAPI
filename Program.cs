@@ -1,5 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using TraineeAPI.Data;
+using TraineeAPI.Repositories;
+using TraineeAPI.Repositories.Interfaces;
+using TraineeAPI.Services;
+using TraineeAPI.Repositories;
+using TraineeAPI.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +32,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<PasswordService>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
