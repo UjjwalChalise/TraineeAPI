@@ -1,11 +1,32 @@
+using Microsoft.EntityFrameworkCore;
+using TraineeMVC.Data;
+using TraineeAPI.Services;
+using TraineeAPI.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContext")
+    ?? throw new InvalidOperationException("Connection string 'ApplicationDbContext' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApi();
-
 builder.Services.AddSwaggerGen();
+
+//===============================================================
+builder.Services.AddScoped<ICoursesRepository, CoursesRepository>();
+builder.Services.AddScoped<IStudentsRepository, StudentsRepository>();
+builder.Services.AddScoped<ITeachersRepository, TeachersRepository>();
+builder.Services.AddScoped<IUserDetailsRepository, UserDetailsRepository>();
+
+builder.Services.AddScoped<ICourseBusiness, CourseBusiness>();
+builder.Services.AddScoped<IStudentBusiness, StudentBusiness>();
+builder.Services.AddScoped<ITeacherBusiness, TeacherBusiness>();
+builder.Services.AddScoped<IUserDetailsBusiness, UserDetailsBusiness>();
+//===============================================================
 
 builder.Services.AddCors(options =>
 {
@@ -18,20 +39,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.MapOpenApi();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint(
-            "/swagger/v1/swagger.json",
-            "My API V1"
-        );
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
