@@ -24,6 +24,12 @@ public class ApplicationDbContext : DbContext
             .WithOne(t => t.UserDetails)
             .HasForeignKey<Teacher>(t => t.UserDetailsId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<Teacher>()
+            .HasMany(t => t.Courses)
+            .WithOne(c => c.Teacher)
+            .HasForeignKey(c => c.TeacherId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<UserDetails> UserDetails => Set<UserDetails>();

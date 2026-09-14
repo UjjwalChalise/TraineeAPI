@@ -41,4 +41,20 @@ public class AuthController : ControllerBase
             return Conflict(ex.Message);
         }
     }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginRequestDto request)
+    {
+        var token = await _authService.LoginAsync(request);
+
+        if (token == null)
+        {
+            return Unauthorized("Invalid username, password, or user type.");
+        }
+
+        return Ok(new
+        {
+            token = token
+        });
+    }
 }
