@@ -42,7 +42,7 @@ namespace TraineeAPI.Repository
 
             existingUser.UserName = user.UserName;
             existingUser.Email = user.Email;
-            existingUser.Password = user.Password;
+            existingUser.PasswordHash = user.PasswordHash;
             existingUser.Role = user.Role;
 
             await _context.SaveChangesAsync();
