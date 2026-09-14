@@ -44,7 +44,7 @@ namespace TraineeAPI.Controllers
                 new { id = result.Id },
                 result);
         }
-
+         
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
