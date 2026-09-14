@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using TraineeMVC.Data;
-using TraineeAPI.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TraineeAPI.Repositories;
+using TraineeAPI.Services;
+using TraineeMVC.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +18,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddAuthorization(); //JWT
+
+builder.Services.AddScoped<IJWTService, JWTService>(); //JWT
 
 //===============================================================
 builder.Services.AddScoped<ICoursesRepository, CoursesRepository>();
@@ -39,6 +46,34 @@ builder.Services.AddCors(options =>
     });
 });
 
+//=========================JWT Token Configuration=========================
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters =
+        new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidAudience = jwtSettings["Audience"],
+
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings["Key"]!)
+            )
+        };
+});
+//===============================================================
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -51,7 +86,10 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 
+//=========================JWT Middleware=========================
+app.UseAuthentication();
 app.UseAuthorization();
+//===============================================================
 
 app.MapControllers();
 
