@@ -5,6 +5,7 @@ namespace TraineeAPI.Data;
 
 public class AppDbContext : DbContext
 {
+    public DbSet<TraineeAPI.Models.Attendance> Attendance { get; set; } = default!;
     public AppDbContext(
         DbContextOptions<AppDbContext> options)
         : base(options)
@@ -20,7 +21,7 @@ public class AppDbContext : DbContext
     public DbSet<Assignment> Assignments => Set<Assignment>();
     public DbSet<AssignmentSubmission> AssignmentSubmissions => Set<AssignmentSubmission>();
     public DbSet<CourseSession> CourseSessions => Set<CourseSession>();
-
+    public DbSet<Attendance> Attendances => Set<Attendance>();
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);

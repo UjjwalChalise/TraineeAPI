@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TraineeAPI.Data;
+using TraineeAPI.Repositories;
+using TraineeAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,21 @@ var connectionstring = builder.Configuration.GetConnectionString("TraineeConnect
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionstring));
 
+builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services.AddScoped<IUserDetailsRepository, UserDetailsRepository>();
+builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
+builder.Services.AddScoped<IAssignmentRepository, AssignmentRepository>();
+
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<IStudentService, StudentService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<IUserDetailsService, UserDetailsService>();
+builder.Services.AddScoped<IModuleService, ModuleService>();
+builder.Services.AddScoped<ITeacherService, TeacherService>();
+builder.Services.AddScoped<IAssignmentService, AssignmentService>();
 
 builder.Services.AddCors(options =>
 {
