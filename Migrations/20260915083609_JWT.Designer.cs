@@ -12,8 +12,8 @@ using TraineeAPI.Data;
 namespace TraineeAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260911050253_init")]
-    partial class init
+    [Migration("20260915083609_JWT")]
+    partial class JWT
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -89,7 +89,7 @@ namespace TraineeAPI.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("AssignmentSubmission");
+                    b.ToTable("AssignmentSubmissions");
                 });
 
             modelBuilder.Entity("TraineeAPI.Models.Course", b =>
@@ -155,7 +155,7 @@ namespace TraineeAPI.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Enrollment");
+                    b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("TraineeAPI.Models.Module", b =>
@@ -204,7 +204,8 @@ namespace TraineeAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserDetailsId");
+                    b.HasIndex("UserDetailsId")
+                        .IsUnique();
 
                     b.ToTable("Students");
                 });
@@ -226,7 +227,8 @@ namespace TraineeAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserDetailsId");
+                    b.HasIndex("UserDetailsId")
+                        .IsUnique();
 
                     b.ToTable("Teachers");
                 });
@@ -263,6 +265,9 @@ namespace TraineeAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.ToTable("UserDetails");
                 });
 
@@ -286,13 +291,13 @@ namespace TraineeAPI.Migrations
                     b.HasOne("TraineeAPI.Models.Assignment", "Assignment")
                         .WithMany()
                         .HasForeignKey("AssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TraineeAPI.Models.Student", "Student")
                         .WithMany("Submissions")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Assignment");
@@ -305,7 +310,7 @@ namespace TraineeAPI.Migrations
                     b.HasOne("TraineeAPI.Models.Teacher", "Teacher")
                         .WithMany("Courses")
                         .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Teacher");
@@ -316,13 +321,13 @@ namespace TraineeAPI.Migrations
                     b.HasOne("TraineeAPI.Models.Course", "Course")
                         .WithMany("Enrollments")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("TraineeAPI.Models.Student", "Student")
                         .WithMany("Enrollments")
                         .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Course");
@@ -344,9 +349,9 @@ namespace TraineeAPI.Migrations
             modelBuilder.Entity("TraineeAPI.Models.Student", b =>
                 {
                     b.HasOne("TraineeAPI.Models.UserDetails", "UserDetails")
-                        .WithMany()
-                        .HasForeignKey("UserDetailsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("TraineeAPI.Models.Student", "UserDetailsId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("UserDetails");
@@ -355,9 +360,9 @@ namespace TraineeAPI.Migrations
             modelBuilder.Entity("TraineeAPI.Models.Teacher", b =>
                 {
                     b.HasOne("TraineeAPI.Models.UserDetails", "UserDetails")
-                        .WithMany()
-                        .HasForeignKey("UserDetailsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("TraineeAPI.Models.Teacher", "UserDetailsId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("UserDetails");

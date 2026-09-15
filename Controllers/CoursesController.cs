@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TraineeAPI.Models;
-using TraineeAPI.Services;
+using TraineeAPI.Services.@interface;
 
 namespace TraineeAPI.Controllers;
 

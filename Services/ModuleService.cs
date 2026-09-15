@@ -1,5 +1,6 @@
 ﻿using TraineeAPI.Models;
 using TraineeAPI.Repositories;
+using TraineeAPI.Services.@interface;
 
 namespace TraineeAPI.Services;
 

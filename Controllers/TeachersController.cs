@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TraineeAPI.Services;
-
+using TraineeAPI.Services.@interface;
 namespace TraineeAPI.Controllers;
 
 [ApiController]

@@ -1,6 +1,6 @@
 ﻿using TraineeAPI.Models;
 
-namespace TraineeAPI.Services;
+namespace TraineeAPI.Services.@interface;
 
 public interface ITeacherService
 {

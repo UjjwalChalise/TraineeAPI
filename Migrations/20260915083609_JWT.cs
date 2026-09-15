@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TraineeAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class JWT : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -134,8 +134,7 @@ namespace TraineeAPI.Migrations
                         name: "FK_Students_UserDetails_UserDetailsId",
                         column: x => x.UserDetailsId,
                         principalTable: "UserDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -154,12 +153,11 @@ namespace TraineeAPI.Migrations
                         name: "FK_Teachers_UserDetails_UserDetailsId",
                         column: x => x.UserDetailsId,
                         principalTable: "UserDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "AssignmentSubmission",
+                name: "AssignmentSubmissions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -173,23 +171,21 @@ namespace TraineeAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AssignmentSubmission", x => x.Id);
+                    table.PrimaryKey("PK_AssignmentSubmissions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AssignmentSubmission_Assignments_AssignmentId",
+                        name: "FK_AssignmentSubmissions_Assignments_AssignmentId",
                         column: x => x.AssignmentId,
                         principalTable: "Assignments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_AssignmentSubmission_Students_StudentId",
+                        name: "FK_AssignmentSubmissions_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Enrollment",
+                name: "Enrollments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -202,19 +198,17 @@ namespace TraineeAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Enrollment", x => x.Id);
+                    table.PrimaryKey("PK_Enrollments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Enrollment_Courses_CourseId",
+                        name: "FK_Enrollments_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Enrollment_Students_StudentId",
+                        name: "FK_Enrollments_Students_StudentId",
                         column: x => x.StudentId,
                         principalTable: "Students",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -233,23 +227,23 @@ namespace TraineeAPI.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssignmentSubmission_AssignmentId",
-                table: "AssignmentSubmission",
+                name: "IX_AssignmentSubmissions_AssignmentId",
+                table: "AssignmentSubmissions",
                 column: "AssignmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AssignmentSubmission_StudentId",
-                table: "AssignmentSubmission",
+                name: "IX_AssignmentSubmissions_StudentId",
+                table: "AssignmentSubmissions",
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enrollment_CourseId",
-                table: "Enrollment",
+                name: "IX_Enrollments_CourseId",
+                table: "Enrollments",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enrollment_StudentId",
-                table: "Enrollment",
+                name: "IX_Enrollments_StudentId",
+                table: "Enrollments",
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
@@ -260,20 +254,27 @@ namespace TraineeAPI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Students_UserDetailsId",
                 table: "Students",
-                column: "UserDetailsId");
+                column: "UserDetailsId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Teachers_UserDetailsId",
                 table: "Teachers",
-                column: "UserDetailsId");
+                column: "UserDetailsId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserDetails_Email",
+                table: "UserDetails",
+                column: "Email",
+                unique: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Courses_Teachers_TeacherId",
                 table: "Courses",
                 column: "TeacherId",
                 principalTable: "Teachers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -284,10 +285,10 @@ namespace TraineeAPI.Migrations
                 table: "Courses");
 
             migrationBuilder.DropTable(
-                name: "AssignmentSubmission");
+                name: "AssignmentSubmissions");
 
             migrationBuilder.DropTable(
-                name: "Enrollment");
+                name: "Enrollments");
 
             migrationBuilder.DropTable(
                 name: "Teachers");
