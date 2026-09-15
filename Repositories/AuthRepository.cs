@@ -42,4 +42,10 @@ public class AuthRepository : IAuthRepository
         _context.Teachers.Add(teacher);
         await _context.SaveChangesAsync();
     }
+
+    public async Task<Teacher?> GetTeacherByUserIdAsync(int userDetailsId)
+    {
+        return await _context.Teachers
+            .FirstOrDefaultAsync(t => t.UserDetailsId == userDetailsId);
+    }
 }

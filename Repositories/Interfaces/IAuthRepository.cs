@@ -11,4 +11,5 @@ public interface IAuthRepository
     Task AddStudentAsync(Student student);
 
     Task AddTeacherAsync(Teacher teacher);
+    Task<Teacher?> GetTeacherByUserIdAsync(int userDetailsId);
 }

@@ -3,6 +3,8 @@ using TraineeAPI.DTOs;
 using TraineeAPI.Models;
 using TraineeAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using TraineeAPI.Authorization;
 
 namespace TraineeAPI.Controllers;
 
@@ -12,10 +14,12 @@ namespace TraineeAPI.Controllers;
 public class CourseController : ControllerBase
 {
     private readonly ICourseRepository _repository;
+    private readonly IAuthRepository _authRepository;
 
-    public CourseController(ICourseRepository repository)
+    public CourseController( ICourseRepository repository, IAuthRepository authRepository)
     {
         _repository = repository;
+        _authRepository = authRepository;
     }
 
     // GET: api/Course
@@ -55,15 +59,32 @@ public class CourseController : ControllerBase
         return Ok(response);
     }
 
+
     // POST: api/Course
+    [UserTypeAuthorize("Teacher")]
     [HttpPost]
     public async Task<ActionResult<CourseResponseDto>> PostCourse(
         CourseRequestDto request)
     {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (!int.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized();
+        }
+
+        var teacher = await _authRepository.GetTeacherByUserIdAsync(userId);
+
+        if (teacher == null)
+        {
+            return Forbid();
+        }
+
         var course = new Course
         {
             Name = request.Name,
-            Description = request.Description
+            Description = request.Description,
+            TeacherId = teacher.Id
         };
 
         var createdCourse = await _repository.AddAsync(course);
@@ -81,7 +102,6 @@ public class CourseController : ControllerBase
             response
         );
     }
-
     // PUT: api/Course/5
     [HttpPut("{id}")]
     public async Task<IActionResult> PutCourse(
