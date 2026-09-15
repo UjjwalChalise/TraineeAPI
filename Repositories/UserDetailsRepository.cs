@@ -55,6 +55,13 @@ namespace TraineeAPI.Repositories
 
             return true;
         }
+
+        public async Task<UserDetails?> GetByUsernameAsync(string username)
+        {
+            return await _context.UserDetails
+                .FirstOrDefaultAsync(u => u.Username == username);
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             var userDetails = await _context.UserDetails

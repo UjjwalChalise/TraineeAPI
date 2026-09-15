@@ -6,6 +6,7 @@ namespace TraineeAPI.Repositories
     {
         Task<IEnumerable<UserDetails>> GetAllAsync();
         Task<UserDetails?> GetByIdAsync(int id);
+        Task<UserDetails?> GetByUsernameAsync(string username);
         Task<UserDetails> AddAsync(UserDetails userDetails);
         Task<bool> UpdateAsync(UserDetails userDetails);
         Task<bool> DeleteAsync(int id);
