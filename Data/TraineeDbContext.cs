@@ -19,4 +19,8 @@ public class TraineeDbContext : DbContext
     public DbSet<Module> Modules { get; set; }
 
     public DbSet<Assignment> Assignments { get; set; }
+
+    public DbSet<Attendance> Attendances { get; set; }
+
+    public DbSet<UserDetails> UserDetails { get; set; }
 }

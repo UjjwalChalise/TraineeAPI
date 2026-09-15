@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using TraineeAPI.Data;
 using TraineeAPI.Repositories;
 using TraineeAPI.Services;
@@ -58,6 +61,37 @@ builder.Services.AddScoped<IAssignmentRepository,
 builder.Services.AddScoped<IAssignmentService,
                            AssignmentService>();
 
+builder.Services.AddScoped<IUserDetailsRepository,
+                           UserDetailsRepository>();
+
+builder.Services.AddScoped<IUserDetailsService,
+                           UserDetailsService>();
+
+builder.Services.AddAuthentication(
+    JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+
+                ValidIssuer =
+                    builder.Configuration["Jwt:Issuer"],
+
+                ValidAudience =
+                    builder.Configuration["Jwt:Audience"],
+
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            builder.Configuration["Jwt:Key"]!))
+            };
+    });
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -72,10 +106,11 @@ if (app.Environment.IsDevelopment())
             "My API V1");
     });
 }
-
 app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
+
+app.UseAuthentication();   
 
 app.UseAuthorization();
 
